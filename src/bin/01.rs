@@ -1,28 +1,19 @@
 advent_of_code::solution!(1);
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let mut sum = 0;
+    input
+        .lines()
+        .map(|line| {
+            let mut char_iter = line.chars();
+            let first = char_iter.find(|char| char.is_numeric())?;
+            let last = char_iter
+                .rev()
+                .find(|char| char.is_numeric())
+                .unwrap_or(first);
 
-    for line in input.lines() {
-        let mut first: Option<u32> = None;
-        let mut last: u32 = 0;
-
-        for c in line.chars() {
-            if c.is_numeric() {
-                let digit = c.to_digit(10).unwrap();
-
-                if first.is_none() {
-                    first = Some(digit * 10);
-                }
-
-                last = digit;
-            }
-        }
-
-        sum = sum + first.unwrap_or(0) + last;
-    }
-
-    Some(sum)
+            Some(first.to_digit(10)? * 10 + last.to_digit(10)?)
+        })
+        .sum()
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
@@ -30,61 +21,54 @@ pub fn part_two(input: &str) -> Option<u32> {
         "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
     ];
 
-    let mut sum = 0;
+    input
+        .lines()
+        .map(|line| {
+            let chars: Vec<char> = line.chars().collect();
+            let size = chars.len();
 
-    for line in input.lines() {
-        let chars: Vec<char> = line.chars().collect();
+            let mut l = 0;
+            let mut r = size - 1;
 
-        let mut first: u32 = 0;
-        let mut last: u32 = 0;
+            let mut first: u32 = 0;
 
-        let mut left = 0;
-        let mut right = chars.len() - 1;
-
-        'outer: while left < chars.len() {
-            if chars[left].is_numeric() {
-                first = chars[left].to_digit(10).unwrap();
-                break;
-            }
-
-            for (index, num) in numbers.iter().enumerate() {
-                if left + num.len() <= chars.len()
-                    && &line.get(left..left + num.len()).unwrap() == num
-                {
-                    first = 1 + index as u32;
-                    break 'outer;
+            'outer: while l < size {
+                if chars[l].is_numeric() {
+                    first = chars[l].to_digit(10)?;
+                    break;
                 }
-            }
 
-            left += 1;
-        }
-
-        'outer: loop {
-            if chars[right].is_numeric() {
-                last = chars[right].to_digit(10).unwrap();
-                break;
-            }
-
-            for (index, num) in numbers.iter().enumerate() {
-                if right + num.len() <= chars.len()
-                    && &line.get(right..right + num.len()).unwrap() == num
-                {
-                    last = 1 + index as u32;
-                    break 'outer;
+                for (i, num) in numbers.iter().enumerate() {
+                    if l + num.len() <= size && &line.get(l..l + num.len())? == num {
+                        first = 1 + i as u32;
+                        break 'outer;
+                    }
                 }
+
+                l += 1;
             }
 
-            if right == 0 {
-                break;
+            let mut last: u32 = first;
+
+            'outer: while r > l {
+                if chars[r].is_numeric() {
+                    last = chars[r].to_digit(10)?;
+                    break;
+                }
+
+                for (i, num) in numbers.iter().enumerate() {
+                    if r + num.len() <= size && &line.get(r..r + num.len())? == num {
+                        last = 1 + i as u32;
+                        break 'outer;
+                    }
+                }
+
+                r -= 1;
             }
 
-            right -= 1;
-        }
-
-        sum += (first * 10) + last;
-    }
-
-    Some(sum)
+            Some((first * 10) + last)
+        })
+        .sum()
 }
 
 #[cfg(test)]
