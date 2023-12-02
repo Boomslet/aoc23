@@ -1,3 +1,5 @@
+use std::cmp::max;
+
 advent_of_code::solution!(2);
 
 pub fn part_one(input: &str) -> Option<u32> {
@@ -41,9 +43,9 @@ pub fn part_two(input: &str) -> Option<u32> {
                 let count: u32 = count.parse::<u32>().unwrap();
 
                 match colour {
-                    "red" => red = std::cmp::max(red, count),
-                    "green" => green = std::cmp::max(green, count),
-                    "blue" => blue = std::cmp::max(blue, count),
+                    "red" => red = max(red, count),
+                    "green" => green = max(green, count),
+                    "blue" => blue = max(blue, count),
                     _ => todo!(),
                 }
             }
