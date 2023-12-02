@@ -46,7 +46,7 @@ pub fn part_two(input: &str) -> Option<u32> {
                     "red" => red = max(red, count),
                     "green" => green = max(green, count),
                     "blue" => blue = max(blue, count),
-                    _ => todo!(),
+                    _ => {}
                 }
             }
 
