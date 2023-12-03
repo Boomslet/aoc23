@@ -1,10 +1,9 @@
-use std::collections::HashSet;
 advent_of_code::solution!(3);
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let symbols = ['#', '$', '%', '&', '*', '+', '-', '/', '=', '@'];
+    const SYMBOLS: [char; 10] = ['#', '$', '%', '&', '*', '+', '-', '/', '=', '@'];
 
-    let matrix: Vec<Vec<char>> = input.lines().map(|line| line.chars().collect()).collect();
+    let mut matrix: Vec<Vec<char>> = input.lines().map(|line| line.chars().collect()).collect();
 
     let n_rows = matrix.len();
     let n_cols = matrix[0].len();
@@ -12,42 +11,24 @@ pub fn part_one(input: &str) -> Option<u32> {
     let mut x;
     let mut y = 0;
 
-    let mut seen = HashSet::new();
     let mut total = 0;
 
     while y < n_rows {
         x = 0;
 
         while x < n_cols {
-            if seen.contains(&(y, x)) {
-                x += 1;
-                continue;
-            }
-
             let c = matrix[y][x];
 
-            if symbols.contains(&c) {
-                let mut y_offsets = vec![y, y + 1];
-                let mut x_offsets = vec![x, x + 1];
+            if SYMBOLS.contains(&c) {
+                for y_offset in [y.saturating_sub(1), y, y + 1] {
+                    if y_offset == n_rows {
+                        continue;
+                    }
 
-                if y > 0 {
-                    y_offsets.insert(0, y - 1);
-                }
-
-                if x > 0 {
-                    x_offsets.insert(0, x - 1);
-                }
-
-                for y_offset in y_offsets {
-                    for mut x_offset in x_offsets.clone() {
-                        if x_offset >= n_cols
-                            || y_offset >= n_rows
-                            || seen.contains(&(y_offset, x_offset))
-                        {
+                    for mut x_offset in [x.saturating_sub(1), x, x + 1] {
+                        if x_offset == n_cols {
                             continue;
                         }
-
-                        seen.insert((y_offset, x_offset));
 
                         if matrix[y_offset][x_offset].is_numeric() {
                             while matrix[y_offset][x_offset - 1].is_numeric() {
@@ -63,7 +44,8 @@ pub fn part_one(input: &str) -> Option<u32> {
                             while x_offset < n_cols && matrix[y_offset][x_offset].is_numeric() {
                                 sum *= 10;
                                 sum += matrix[y_offset][x_offset].to_digit(10)?;
-                                seen.insert((y_offset, x_offset));
+                                matrix[y_offset][x_offset] = '.';
+                                // seen.insert((y_offset, x_offset));
                                 x_offset += 1;
                             }
 
@@ -83,7 +65,7 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let matrix: Vec<Vec<char>> = input.lines().map(|line| line.chars().collect()).collect();
+    let mut matrix: Vec<Vec<char>> = input.lines().map(|line| line.chars().collect()).collect();
 
     let n_rows = matrix.len();
     let n_cols = matrix[0].len();
@@ -91,44 +73,26 @@ pub fn part_two(input: &str) -> Option<u32> {
     let mut x;
     let mut y = 0;
 
-    let mut seen = HashSet::new();
     let mut total = 0;
 
     while y < n_rows {
         x = 0;
 
         while x < n_cols {
-            if seen.contains(&(y, x)) {
-                x += 1;
-                continue;
-            }
-
             let c = matrix[y][x];
 
             if c == '*' {
-                let mut y_offsets = vec![y, y + 1];
-                let mut x_offsets = vec![x, x + 1];
-
-                if y > 0 {
-                    y_offsets.insert(0, y - 1);
-                }
-
-                if x > 0 {
-                    x_offsets.insert(0, x - 1);
-                }
-
                 let mut sums: Vec<u32> = vec![];
 
-                for y_offset in y_offsets {
-                    for mut x_offset in x_offsets.clone() {
-                        if x_offset >= n_cols
-                            || y_offset >= n_rows
-                            || seen.contains(&(y_offset, x_offset))
-                        {
+                for y_offset in [y.saturating_sub(1), y, y + 1] {
+                    if y_offset == n_rows {
+                        continue;
+                    }
+
+                    for mut x_offset in [x.saturating_sub(1), x, x + 1] {
+                        if x_offset == n_cols {
                             continue;
                         }
-
-                        seen.insert((y_offset, x_offset));
 
                         if matrix[y_offset][x_offset].is_numeric() {
                             while matrix[y_offset][x_offset - 1].is_numeric() {
@@ -144,7 +108,7 @@ pub fn part_two(input: &str) -> Option<u32> {
                             while x_offset < n_cols && matrix[y_offset][x_offset].is_numeric() {
                                 sum *= 10;
                                 sum += matrix[y_offset][x_offset].to_digit(10)?;
-                                seen.insert((y_offset, x_offset));
+                                matrix[y_offset][x_offset] = '.';
                                 x_offset += 1;
                             }
 
@@ -174,12 +138,12 @@ mod tests {
     #[test]
     fn test_part_one() {
         let result = part_one(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(540131));
     }
 
     #[test]
     fn test_part_two() {
         let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(86879020));
     }
 }
