@@ -1,0 +1,85 @@
+use std::collections::HashSet;
+advent_of_code::solution!(3);
+
+pub fn part_one(input: &str) -> Option<u32> {
+    let symbols = ["#", "$", "%", "&", "*", "+", "-", "/", "=", "@"];
+
+    let matrix: Vec<Vec<char>> = input.lines().map(|line| line.chars().collect()).collect();
+
+    let n_rows = matrix.len();
+    let n_cols = matrix.len();
+
+    let mut x = 0;
+    let mut y = 0;
+
+    let mut seen: HashSet<(u32, u32)> = HashSet::new();
+
+    while y <= n_rows {
+        if seen.contains((y, x)) { continue; }
+
+        let c = matrix[y][x];
+
+        if symbols.contains(c) {
+
+            for y_offset in [-1, 1] {
+                for x_offset in [-1, 1] {
+                    let x_prime = x + x_offset;
+                    let y_prime = y + y_offset;
+
+                    if x_prime < 0 || x_prime > 0 || x_prime > matrix[0].len() || y_prime > matrix.len() || seen.contains((y_prime, x_prime)) {
+                        continue;
+                    }
+
+                    seen.insert((y_prime, x_prime));
+
+                    if matrix[y_prime][x_prime].is_numeric() {
+                        while x_prime >= 0 && matrix[y_prime][x_prime].is_numeric() {
+                            x_prime =- 1;
+                        }
+
+                        let mut sum = 0;
+
+                        while x_prime < n_cols && matrix[y_prime][x_prime].is_numeric() {
+                            sum *= 10;
+                            sum += matrix[y_prime][x_prime].to_digit(10);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+
+            for (x, char) in char_iter.enumerate() {
+                if symbols.contains(char) {
+                    for x_offset in [-1, 1] {
+                        for y_offset in [-1, 1] {}
+                    }
+                }
+            }
+        })
+        .sum()
+    // .sum()
+}
+
+pub fn part_two(input: &str) -> Option<u32> {
+    None
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_part_one() {
+        let result = part_one(&advent_of_code::template::read_file("examples", DAY));
+        assert_eq!(result, None);
+    }
+
+    #[test]
+    fn test_part_two() {
+        let result = part_two(&advent_of_code::template::read_file("examples", DAY));
+        assert_eq!(result, None);
+    }
+}
