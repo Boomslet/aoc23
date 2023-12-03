@@ -6,11 +6,7 @@ pub fn part_one(input: &str) -> Option<u32> {
         .map(|line| {
             let mut char_iter = line.chars();
             let first = char_iter.find(|char| char.is_numeric())?;
-            let last = char_iter
-                .rev()
-                .find(|char| char.is_numeric())
-                .unwrap_or(first);
-
+            let last = char_iter.rfind(|char| char.is_numeric()).unwrap_or(first);
             Some(first.to_digit(10)? * 10 + last.to_digit(10)?)
         })
         .sum()

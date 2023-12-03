@@ -18,7 +18,7 @@ pub fn part_one(input: &str) -> Option<u32> {
                     || colour == "red" && count > 12
                     || colour == "green" && count > 13
                 {
-                    return Some(0);
+                    return None;
                 }
             }
 
