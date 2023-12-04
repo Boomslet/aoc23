@@ -26,18 +26,9 @@ pub fn part_one(input: &str) -> Option<u32> {
                 .map(|n| n.trim().parse().unwrap())
                 .collect();
 
-            let count: u32 = numbers
-                .into_iter()
-                .map(|n| {
-                    if winning.contains(&n) {
-                        return 1;
-                    }
+            let count: usize = numbers.into_iter().filter(|n| winning.contains(n)).count();
 
-                    0
-                })
-                .sum();
-
-            VALUES.get(count as usize)
+            VALUES.get(count)
         })
         .sum()
 }
