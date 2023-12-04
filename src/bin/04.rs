@@ -18,13 +18,12 @@ pub fn part_one(input: &str) -> Option<u32> {
                 .map(|n| n.parse().unwrap())
                 .collect();
 
-            let numbers: Vec<u32> = numbers
+            let count = numbers
                 .split(' ')
                 .filter(|n| !n.is_empty())
                 .map(|n| n.parse().unwrap())
-                .collect();
-
-            let count: usize = numbers.into_iter().filter(|n| winning.contains(n)).count();
+                .filter(|n| winning.contains(n))
+                .count();
 
             VALUES.get(count)
         })
@@ -44,20 +43,17 @@ pub fn part_two(input: &str) -> Option<u32> {
             .map(|n| n.parse().unwrap())
             .collect();
 
-        let numbers: Vec<u32> = numbers
+        let mut counter = 0;
+
+        numbers
             .split(' ')
             .filter(|n| !n.is_empty())
             .map(|n| n.parse().unwrap())
-            .collect();
-
-        let mut counter = 1;
-
-        numbers.into_iter().for_each(|n| {
-            if winning.contains(&n) {
-                values[i + counter] += values[i];
+            .filter(|n| winning.contains(n))
+            .for_each(|_| {
                 counter += 1;
-            }
-        });
+                values[i + counter] += values[i];
+            });
     });
 
     Some(values.into_iter().sum())
