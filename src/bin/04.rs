@@ -9,21 +9,19 @@ pub fn part_one(input: &str) -> Option<u32> {
     input
         .lines()
         .map(|line| {
-            let (_, line) = line.split_once(':')?;
+            let (_, line) = line.split_once(':').unwrap();
             let (winning, numbers) = line.split_once('|').unwrap();
 
             let winning: Vec<u32> = winning
-                .trim()
                 .split(' ')
                 .filter(|n| !n.is_empty())
-                .map(|n| n.trim().parse().unwrap())
+                .map(|n| n.parse().unwrap())
                 .collect();
 
             let numbers: Vec<u32> = numbers
-                .trim()
                 .split(' ')
                 .filter(|n| !n.is_empty())
-                .map(|n| n.trim().parse().unwrap())
+                .map(|n| n.parse().unwrap())
                 .collect();
 
             let count: usize = numbers.into_iter().filter(|n| winning.contains(n)).count();
@@ -41,17 +39,15 @@ pub fn part_two(input: &str) -> Option<u32> {
         let (winning, numbers) = line.split_once('|').unwrap();
 
         let winning: Vec<u32> = winning
-            .trim()
             .split(' ')
             .filter(|n| !n.is_empty())
-            .map(|n| n.trim().parse().unwrap())
+            .map(|n| n.parse().unwrap())
             .collect();
 
         let numbers: Vec<u32> = numbers
-            .trim()
             .split(' ')
             .filter(|n| !n.is_empty())
-            .map(|n| n.trim().parse().unwrap())
+            .map(|n| n.parse().unwrap())
             .collect();
 
         let mut counter = 1;
