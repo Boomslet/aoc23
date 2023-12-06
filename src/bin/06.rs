@@ -62,12 +62,10 @@ pub fn part_two(input: &str) -> Option<u64> {
         .parse::<u64>()
         .unwrap();
 
-    let count = (1..time).reduce(|count, t| match t * (time - t) > distance {
+    (1..time).reduce(|count, t| match t * (time - t) > distance {
         true => count + 1,
         false => count,
-    })?;
-
-    Some(count)
+    })
 }
 
 #[cfg(test)]
