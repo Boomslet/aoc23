@@ -24,17 +24,13 @@ pub fn part_one(input: &str) -> Option<u32> {
     let counts = times
         .into_iter()
         .zip(distances)
-        .map(|(t, d)| {
-            let count: u32 = (1..t)
-                .map(|time| {
-                    if time * (t - time) > d {
-                        return 1;
-                    }
-                    0
+        .map(|(time, distance)| {
+            (1..time)
+                .map(|t| match t * (time - t) > distance {
+                    true => 1,
+                    false => 0,
                 })
-                .sum();
-
-            count
+                .sum()
         })
         .collect::<Vec<u32>>();
 
@@ -67,11 +63,9 @@ pub fn part_two(input: &str) -> Option<u64> {
     let distance = distances.parse::<u64>().unwrap();
 
     let count: u64 = (1..time)
-        .map(|t| {
-            if t * (time - t) > distance {
-                return 1;
-            }
-            0
+        .map(|t| match t * (time - t) > distance {
+            true => 1,
+            false => 0,
         })
         .sum();
 
