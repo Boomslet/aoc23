@@ -1,6 +1,6 @@
 advent_of_code::solution!(6);
 
-pub fn part_one(input: &str) -> Option<u32> {
+pub fn part_one(input: &str) -> Option<usize> {
     let mut lines = input.lines().peekable();
 
     let times = lines
@@ -9,8 +9,8 @@ pub fn part_one(input: &str) -> Option<u32> {
         .map(|line| line.split_once(':').unwrap().1)
         .flat_map(|line| line.split(' '))
         .filter(|s| !s.is_empty())
-        .map(|s| s.parse::<u32>().unwrap())
-        .collect::<Vec<u32>>();
+        .map(|s| s.parse::<usize>().unwrap())
+        .collect::<Vec<usize>>();
 
     let distances = lines
         .next()
@@ -18,56 +18,54 @@ pub fn part_one(input: &str) -> Option<u32> {
         .map(|line| line.split_once(':').unwrap().1)
         .flat_map(|line| line.split(' '))
         .filter(|s| !s.is_empty())
-        .map(|s| s.parse::<u32>().unwrap())
-        .collect::<Vec<u32>>();
+        .map(|s| s.parse::<usize>().unwrap())
+        .collect::<Vec<usize>>();
 
-    let counts = times
-        .into_iter()
-        .zip(distances)
-        .map(|(time, distance)| {
-            (1..time)
-                .map(|t| match t * (time - t) > distance {
-                    true => 1,
-                    false => 0,
-                })
-                .sum()
-        })
-        .collect::<Vec<u32>>();
-
-    Some(counts.into_iter().product())
+    Some(
+        times
+            .into_iter()
+            .zip(distances)
+            .map(|(time, distance)| {
+                (1..time)
+                    .reduce(|count, t| match t * (time - t) > distance {
+                        true => count + 1,
+                        false => count,
+                    })
+                    .unwrap()
+            })
+            .product(),
+    )
 }
 
 pub fn part_two(input: &str) -> Option<u64> {
     let mut lines = input.lines().peekable();
 
-    let times = lines
+    let time = lines
         .next()
         .into_iter()
         .map(|line| line.split_once(':').unwrap().1)
         .flat_map(|line| line.split(' '))
         .filter(|s| !s.is_empty())
         .collect::<Vec<&str>>()
-        .join("");
+        .join("")
+        .parse::<u64>()
+        .unwrap();
 
-    let time = times.parse::<u64>().unwrap();
-
-    let distances = lines
+    let distance = lines
         .next()
         .into_iter()
         .map(|line| line.split_once(':').unwrap().1)
         .flat_map(|line| line.split(' '))
         .filter(|s| !s.is_empty())
         .collect::<Vec<&str>>()
-        .join("");
+        .join("")
+        .parse::<u64>()
+        .unwrap();
 
-    let distance = distances.parse::<u64>().unwrap();
-
-    let count: u64 = (1..time)
-        .map(|t| match t * (time - t) > distance {
-            true => 1,
-            false => 0,
-        })
-        .sum();
+    let count = (1..time).reduce(|count, t| match t * (time - t) > distance {
+        true => count + 1,
+        false => count,
+    })?;
 
     Some(count)
 }
