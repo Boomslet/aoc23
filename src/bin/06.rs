@@ -1,7 +1,7 @@
 advent_of_code::solution!(6);
 
 pub fn part_one(input: &str) -> Option<usize> {
-    let mut lines = input.lines().peekable();
+    let mut lines = input.lines();
 
     let times = lines
         .next()
@@ -38,7 +38,7 @@ pub fn part_one(input: &str) -> Option<usize> {
 }
 
 pub fn part_two(input: &str) -> Option<u64> {
-    let mut lines = input.lines().peekable();
+    let mut lines = input.lines();
 
     let time = lines
         .next()
